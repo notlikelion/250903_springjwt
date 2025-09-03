@@ -1,5 +1,6 @@
 package com.example.springjwt.config;
 
+import com.example.springjwt.filter.JwtAuthenticationFilter;
 import com.example.springjwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -65,6 +67,10 @@ public class SecurityConfig {
 
         // JWT 필터
         // JwtAuthentication Filter - 토큰에 들어가 있는 내용을 검증하는 역할
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil, authenticationManager(authenticationConfiguration));
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login"); // 로그인처리 URL -> 필터
+        http.addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         // JwtAuthorization Filter - 토큰을 발급하는 역할
 
         return http.build();
