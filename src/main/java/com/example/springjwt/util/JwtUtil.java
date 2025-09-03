@@ -1,11 +1,13 @@
 package com.example.springjwt.util;
 
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Component // Scan -> 등록
 public class JwtUtil {
@@ -20,5 +22,26 @@ public class JwtUtil {
         System.out.println("accessTokenExpiration: " + accessTokenExpiration);
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessTokenExpiration = accessTokenExpiration;
+    }
+
+    public String createAccessToken(String username) {
+        return createToken(username, accessTokenExpiration);
+    }
+
+    public long getAccessTokenExpiration() {
+        return accessTokenExpiration;
+    }
+
+    public String createToken(String username, Long expiration) {
+        // 토큰을 만들 때는 만료일, 변환 로직
+        Date now = new Date(); // 어차피 이걸 long -> 어떤 시간대에 있든 실질적으로는 UTC.
+        Date expiryDate = new Date(now.getTime() + expiration);
+
+        return Jwts.builder()
+                .subject(username) // 주요내용(유저이름)
+                .issuedAt(now) // 발급일시
+                .expiration(expiryDate) // 만료일시
+                .signWith(secretKey) // 서명시 사용할 비밀키
+                .compact(); // JWT 문자열 생성
     }
 }
