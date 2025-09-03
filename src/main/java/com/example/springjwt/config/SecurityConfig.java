@@ -4,6 +4,7 @@ import com.example.springjwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,6 +63,15 @@ public class SecurityConfig {
                 }))
         );
 
+        // JWT 필터
+        // JwtAuthentication Filter - 토큰에 들어가 있는 내용을 검증하는 역할
+        // JwtAuthorization Filter - 토큰을 발급하는 역할
+
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }
