@@ -56,7 +56,7 @@ public class SecurityConfig {
 
         // URL별 접근 권한 설정
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/login", "/api/login").permitAll()
                 .anyRequest().authenticated()
         ); // 로그인만 모두가 들어가고 나머지는 로그인해야...
 
@@ -74,7 +74,7 @@ public class SecurityConfig {
         // JWT 필터
         // JwtAuthentication Filter - 토큰에 들어가 있는 내용을 검증하는 역할
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil, authenticationManager(authenticationConfiguration));
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login"); // 로그인처리 URL -> 필터
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/login"); // 로그인처리 URL -> 필터
         http.addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // JwtAuthorization Filter - 토큰을 발급, 서식 검증하는 역할
