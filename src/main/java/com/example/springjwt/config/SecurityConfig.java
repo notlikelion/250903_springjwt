@@ -2,6 +2,7 @@ package com.example.springjwt.config;
 
 import com.example.springjwt.filter.JwtAuthenticationFilter;
 import com.example.springjwt.filter.JwtAuthorizationFilter;
+import com.example.springjwt.util.CookieUtil;
 import com.example.springjwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +62,7 @@ public class SecurityConfig {
         http.logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(((request, response, authentication) -> {
-                    // TODO : 쿠키 삭제 로직
+                    CookieUtil.deleteCookie(request, response, "accessToken");
                     response.sendRedirect("/login");
                 }))
         );
