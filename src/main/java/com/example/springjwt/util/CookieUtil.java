@@ -16,5 +16,15 @@ public class CookieUtil {
     }
 
     public static Optional<String> getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(name)) {
+                    return Optional.of(cookie.getValue());
+                    // accessToken -> value.
+                }
+            }
+        }
+        return Optional.empty();
     }
 }
