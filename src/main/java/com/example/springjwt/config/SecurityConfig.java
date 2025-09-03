@@ -44,6 +44,24 @@ public class SecurityConfig {
         // HTTP Basic 인증 방식 비활성화
 //        http.httpBasic(basic -> basic.disable());
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        // URL별 접근 권한 설정
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+        ); // 로그인만 모두가 들어가고 나머지는 로그인해야...
+
+        // 로그아웃
+        // 세션 -> 세션만료
+        // 쿠키 -> 쿠키에 토큰에 담았음 -> 쿠키 삭제.
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(((request, response, authentication) -> {
+                    // TODO : 쿠키 삭제 로직
+                    response.sendRedirect("/login");
+                }))
+        );
+
         return http.build();
     }
 }
