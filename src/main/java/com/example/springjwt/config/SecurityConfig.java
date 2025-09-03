@@ -1,6 +1,7 @@
 package com.example.springjwt.config;
 
 import com.example.springjwt.filter.JwtAuthenticationFilter;
+import com.example.springjwt.filter.JwtAuthorizationFilter;
 import com.example.springjwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -71,8 +72,8 @@ public class SecurityConfig {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login"); // 로그인처리 URL -> 필터
         http.addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // JwtAuthorization Filter - 토큰을 발급하는 역할
-
+        // JwtAuthorization Filter - 토큰을 발급, 서식 검증하는 역할
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -80,4 +81,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
+    // TODO: 테스트용 유저 디테일
 }

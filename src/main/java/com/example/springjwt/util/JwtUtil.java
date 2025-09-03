@@ -1,5 +1,6 @@
 package com.example.springjwt.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,5 +44,29 @@ public class JwtUtil {
                 .expiration(expiryDate) // 만료일시
                 .signWith(secretKey) // 서명시 사용할 비밀키
                 .compact(); // JWT 문자열 생성
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            getClaims(token);
+            return true;
+        } catch (Exception e) {
+            // 만료, 형식 오류...
+            return false;
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return getClaims(token).getSubject(); // subject -> username
+    }
+
+    public Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token) // token -> secretKey sign claim
+                .getPayload(); // payload -> data
+        // subject -> username
+        // 발행일시, 만료일시...
     }
 }
