@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: springjwt
+# JWT
+jwt:
+  secret: aee849950c37e8f8efc049f6373cbe8f
+  # ms -> 1/1000초. 1시간 -> 1000 * 60 * 60
+  access-token-expiration: 3600000
